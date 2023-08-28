@@ -31,7 +31,30 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended:true}))
-
+db.query('CREATE DATABASE IF NOT EXISTS myapp', (err, result) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('Database created or already exists');
+    db.query(
+      `CREATE TABLE IF NOT EXISTS myapp.customer (
+        user_id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        contact VARCHAR(255) NOT NULL,
+        city VARCHAR(255) NOT NULL,
+        age INT NOT NULL
+      )`,
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log('Table created or already exists');
+        }
+      }
+    );
+  }
+});
 // ---------------------------------------display details start--------------------------------------
 app.get('/api/displayDeetails', (req, res) => {
   const sqlSelect = 'SELECT * FROM customer';
@@ -47,6 +70,11 @@ app.get('/api/displayDeetails', (req, res) => {
       }
     }
   });
+});
+
+app.get('/api/healthcheck', (req, res) => {
+  console.log("Success")
+  res.send("success")
 });
 
  
